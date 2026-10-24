@@ -4,6 +4,8 @@
 
 [by 王嘉祥](https://github.com/iWangJiaxiang)
 
+[在线使用](https://vault-studio.jiaxiang.wang/) · [个人网站](https://www.jiaxiang.wang/)
+
 ## 功能
 
 - **场景导视与组合清单**：13 组场景，按层查看零件、打印文件份数与五金参考。
@@ -25,6 +27,24 @@
 HTML 约 34.5 MB，包含缩略图、64 页说明图及五份手册 PDF，**不包含 STL 模型文件**。关联模型时只在本地读取，不上传、不修改原文件。
 
 详细操作、保存方式及使用限制见 [使用说明](./使用说明.md)。
+
+## 在线部署与自定义域名
+
+GitHub Actions 工作流 [deploy-pages.yml](./.github/workflows/deploy-pages.yml) 在 `main` 分支的 HTML、`CNAME` 或工作流文件更新时自动部署，也支持在 Actions 页面手动运行。发布时将单 HTML 复制为 `index.html`，同时发布 `CNAME`，无需构建依赖。
+
+仓库的 **Settings → Pages → Build and deployment → Source** 使用 **GitHub Actions**，自定义域名设置为 `vault-studio.jiaxiang.wang`。在 `jiaxiang.wang` 的 DNS 服务商处设置：
+
+| 参数 | 配置值 |
+| --- | --- |
+| 记录类型 | `CNAME` |
+| 主机记录 | `vault-studio` |
+| 完整域名 | `vault-studio.jiaxiang.wang` |
+| 目标 / 记录值 | `iwangjiaxiang.github.io` |
+| TTL | `300` 秒或自动 |
+
+目标值不包含协议或仓库路径。如果已有同名 CNAME，直接映射 GitHub Pages 时需替换旧记录，避免同名记录冲突。DNS 生效并完成 GitHub 证书签发后，在 Pages 设置中启用 **Enforce HTTPS**。
+
+在线版与下载版使用同一份 HTML。浏览器数据按网站来源分别保存；从本地文件切换到在线版时，可通过 JSON 备份和恢复迁移计划。
 
 ## 来源与参考项目
 

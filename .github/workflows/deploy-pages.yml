@@ -1,0 +1,55 @@
+name: 部署 GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'VAULT-本地工作台.html'
+      - 'CNAME'
+      - '.github/workflows/deploy-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: 配置 Pages
+        uses: actions/configure-pages@v5
+      - name: 准备单文件网站
+        run: |
+          mkdir -p _site
+          cp 'VAULT-本地工作台.html' _site/index.html
+          cp CNAME _site/CNAME
+          touch _site/.nojekyll
+      - name: 上传网站
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 发布网站
+        id: deployment
+        uses: actions/deploy-pages@v4
